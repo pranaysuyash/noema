@@ -1,0 +1,237 @@
+# Fastfile for noema iOS app
+# https://docs.fastlane.tools
+
+default_platform(:ios)
+
+platform :ios do
+  # MARK: - Configuration
+
+  before_all do
+    ensure_git_status_clean unless ENV['SKIP_GIT_CHECK']
+  end
+
+  # MARK: - Testing
+
+  desc "Run all tests"
+  lane :test do
+    Dir.chdir("..") do
+      sh("cd noema-ios && swift test --enable-code-coverage")
+    end
+  end
+
+  desc "Run tests with code coverage"
+  lane :test_with_coverage do
+    test
+    # Generate coverage report
+    Dir.chdir("../noema-ios") do
+      sh("swift test --enable-code-coverage")
+    end
+  end
+
+  # MARK: - Linting
+
+  desc "Run SwiftLint"
+  lane :lint do
+    swiftlint(
+      mode: :lint,
+      config_file: ".swiftlint.yml",
+      raise_if_swiftlint_error: true,
+      strict: true
+    )
+  end
+
+  desc "Auto-fix SwiftLint violations"
+  lane :lint_fix do
+    swiftlint(
+      mode: :fix,
+      config_file: ".swiftlint.yml"
+    )
+  end
+
+  # MARK: - Building
+
+  desc "Build for development"
+  lane :build_dev do
+    Dir.chdir("../noema-ios") do
+      sh("swift build")
+    end
+  end
+
+  desc "Build for release"
+  lane :build_release do
+    Dir.chdir("../noema-ios") do
+      sh("swift build -c release")
+    end
+  end
+
+  # MARK: - Beta Distribution
+
+  desc "Build and upload to TestFlight"
+  lane :beta do
+    # Increment build number
+    increment_build_number(
+      xcodeproj: "noema.xcodeproj"
+    )
+
+    # Get the version number
+    version = get_version_number(xcodeproj: "noema.xcodeproj")
+    build = get_build_number(xcodeproj: "noema.xcodeproj")
+
+    # Build the app
+    build_app(
+      scheme: "noema",
+      configuration: "Staging",
+      export_method: "app-store",
+      output_directory: "./build",
+      output_name: "noema-#{version}-#{build}.ipa"
+    )
+
+    # Upload to TestFlight
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      distribute_external: false,
+      notify_external_testers: false
+    )
+
+    # Commit version bump
+    commit_version_bump(
+      message: "Bump version to #{version} (#{build}) for TestFlight",
+      xcodeproj: "noema.xcodeproj"
+    )
+
+    # Tag the release
+    add_git_tag(
+      tag: "v#{version}-beta#{build}"
+    )
+
+    # Push to remote
+    push_to_git_remote
+
+    # Notify team
+    slack(
+      message: "New TestFlight build available! :rocket:",
+      payload: {
+        "Version" => version,
+        "Build" => build,
+        "Environment" => "Staging"
+      },
+      default_payloads: [:git_branch, :git_author]
+    ) if ENV['SLACK_URL']
+  end
+
+  # MARK: - Release to App Store
+
+  desc "Deploy a new version to the App Store"
+  lane :release do
+    # Increment version
+    increment_version_number(
+      bump_type: "minor",
+      xcodeproj: "noema.xcodeproj"
+    )
+
+    # Increment build number
+    increment_build_number(xcodeproj: "noema.xcodeproj")
+
+    # Get the version number
+    version = get_version_number(xcodeproj: "noema.xcodeproj")
+    build = get_build_number(xcodeproj: "noema.xcodeproj")
+
+    # Build the app
+    build_app(
+      scheme: "noema",
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: "./build",
+      output_name: "noema-#{version}.ipa"
+    )
+
+    # Upload to App Store
+    upload_to_app_store(
+      submit_for_review: false,
+      automatic_release: false,
+      precheck_include_in_app_purchases: false
+    )
+
+    # Commit version bump
+    commit_version_bump(
+      message: "Release version #{version} (#{build})",
+      xcodeproj: "noema.xcodeproj"
+    )
+
+    # Tag the release
+    add_git_tag(
+      tag: "v#{version}"
+    )
+
+    # Push to remote
+    push_to_git_remote
+
+    # Notify team
+    slack(
+      message: "noema #{version} uploaded to App Store! :tada:",
+      payload: {
+        "Version" => version,
+        "Build" => build
+      },
+      default_payloads: [:git_branch, :git_author]
+    ) if ENV['SLACK_URL']
+  end
+
+  # MARK: - Screenshots
+
+  desc "Generate screenshots for App Store"
+  lane :screenshots do
+    capture_screenshots(
+      scheme: "noemaUITests",
+      devices: [
+        "iPhone 15 Pro Max",
+        "iPhone 15 Pro",
+        "iPhone SE (3rd generation)"
+      ],
+      languages: [
+        "en-US",
+        "es-ES",
+        "fr-FR",
+        "de-DE",
+        "ja-JP"
+      ],
+      output_directory: "./fastlane/screenshots",
+      clear_previous_screenshots: true
+    )
+  end
+
+  # MARK: - Metadata
+
+  desc "Upload metadata to App Store Connect"
+  lane :upload_metadata do
+    upload_to_app_store(
+      skip_binary_upload: true,
+      skip_screenshots: false,
+      metadata_path: "./fastlane/metadata"
+    )
+  end
+
+  # MARK: - Utilities
+
+  desc "Clean build artifacts"
+  lane :clean do
+    clear_derived_data
+    Dir.chdir("../noema-ios") do
+      sh("swift package clean")
+    end
+  end
+
+  desc "Reset git to last commit"
+  lane :reset do
+    reset_git_repo(force: true)
+  end
+
+  # MARK: - Error Handling
+
+  error do |lane, exception|
+    slack(
+      message: "Error in lane #{lane}: #{exception.message}",
+      success: false
+    ) if ENV['SLACK_URL']
+  end
+end

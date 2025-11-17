@@ -1,0 +1,152 @@
+name: iOS CI/CD
+
+on:
+  push:
+    branches: [main, develop, claude/**]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
+  IOS_SIMULATOR_DEVICE: "iPhone 15 Pro"
+
+jobs:
+  lint:
+    name: SwiftLint
+    runs-on: macos-14
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: Run SwiftLint
+        run: swiftlint lint --strict
+
+  test:
+    name: Build and Test
+    runs-on: macos-14
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.2'
+
+      - name: Cache Swift Package Manager
+        uses: actions/cache@v3
+        with:
+          path: |
+            .build
+            noema-ios/.build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Resolve Swift Package Dependencies
+        working-directory: noema-ios
+        run: swift package resolve
+
+      - name: Build for testing
+        working-directory: noema-ios
+        run: swift build --build-tests
+
+      - name: Run tests
+        working-directory: noema-ios
+        run: swift test --enable-code-coverage
+
+      - name: Generate code coverage report
+        if: success()
+        working-directory: noema-ios
+        run: |
+          xcrun llvm-cov export \
+            .build/debug/noemaPackageTests.xctest/Contents/MacOS/noemaPackageTests \
+            -instr-profile=.build/debug/codecov/default.profdata \
+            -format=lcov > coverage.lcov
+
+      - name: Upload coverage to Codecov
+        if: success()
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./noema-ios/coverage.lcov
+          fail_ci_if_error: false
+          verbose: true
+
+  build-archive:
+    name: Build Archive
+    runs-on: macos-14
+    needs: test
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.2'
+
+      - name: Build for release
+        working-directory: noema-ios
+        run: swift build -c release
+
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: noema-build-${{ github.sha }}
+          path: noema-ios/.build/release/
+          retention-days: 7
+
+  notify:
+    name: Notify on Slack
+    runs-on: ubuntu-latest
+    needs: [lint, test, build-archive]
+    if: always()
+    steps:
+      - name: Determine status
+        id: status
+        run: |
+          if [ "${{ needs.lint.result }}" == "success" ] && \
+             [ "${{ needs.test.result }}" == "success" ] && \
+             [ "${{ needs.build-archive.result }}" == "success" ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "color=good" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+            echo "color=danger" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Slack notification
+        if: env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST $SLACK_WEBHOOK_URL \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "text": "noema iOS Build",
+              "attachments": [{
+                "color": "${{ steps.status.outputs.color }}",
+                "fields": [
+                  {
+                    "title": "Status",
+                    "value": "${{ steps.status.outputs.status }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Branch",
+                    "value": "${{ github.ref_name }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Commit",
+                    "value": "${{ github.event.head_commit.message }}",
+                    "short": false
+                  }
+                ]
+              }]
+            }'
