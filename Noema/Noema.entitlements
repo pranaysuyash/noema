@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- CloudKit -->
+    <key>com.apple.developer.icloud-container-identifiers</key>
+    <array>
+        <string>iCloud.com.noema.app</string>
+    </array>
+    <key>com.apple.developer.icloud-services</key>
+    <array>
+        <string>CloudKit</string>
+    </array>
+    <key>com.apple.developer.ubiquity-container-identifiers</key>
+    <array>
+        <string>iCloud.com.noema.app</string>
+    </array>
+
+    <!-- HealthKit -->
+    <key>com.apple.developer.healthkit</key>
+    <true/>
+    <key>com.apple.developer.healthkit.access</key>
+    <array>
+        <string>health-records</string>
+    </array>
+
+    <!-- Keychain Sharing -->
+    <key>keychain-access-groups</key>
+    <array>
+        <string>$(AppIdentifierPrefix)com.noema.app</string>
+    </array>
+
+    <!-- App Groups (for Widgets/Extensions) -->
+    <key>com.apple.security.application-groups</key>
+    <array>
+        <string>group.com.noema.app</string>
+    </array>
+
+    <!-- Siri -->
+    <key>com.apple.developer.siri</key>
+    <true/>
+
+    <!-- Push Notifications -->
+    <key>aps-environment</key>
+    <string>production</string>
+
+    <!-- Background Modes -->
+    <key>com.apple.developer.associated-domains</key>
+    <array>
+        <string>applinks:noema.app</string>
+    </array>
+</dict>
+</plist>

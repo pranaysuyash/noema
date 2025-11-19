@@ -1,0 +1,30 @@
+// Release Configuration Settings
+
+// Product Settings
+PRODUCT_NAME = Noema
+PRODUCT_BUNDLE_IDENTIFIER = com.noema.app
+
+// SDK and Deployment
+SDKROOT = iphoneos
+IPHONEOS_DEPLOYMENT_TARGET = 17.0
+SUPPORTED_PLATFORMS = iphoneos iphonesimulator
+
+// Build Settings
+SWIFT_VERSION = 6.0
+SWIFT_OPTIMIZATION_LEVEL = -O
+SWIFT_COMPILATION_MODE = wholemodule
+
+// Debug Information
+DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
+GCC_OPTIMIZATION_LEVEL = s
+DEAD_CODE_STRIPPING = YES
+STRIP_INSTALLED_PRODUCT = YES
+
+// Code Signing
+CODE_SIGN_STYLE = Automatic
+CODE_SIGN_IDENTITY = Apple Distribution
+
+// Other Settings
+ENABLE_TESTABILITY = NO
+ONLY_ACTIVE_ARCH = NO
+VALIDATE_PRODUCT = YES

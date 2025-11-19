@@ -1,0 +1,134 @@
+/*
+  Localizable.strings
+  Noema - English
+
+  Created on January 18, 2025.
+*/
+
+/* General */
+"app.name" = "Noema";
+"app.tagline" = "Your Emotional Intelligence Companion";
+
+/* Tab Bar */
+"tab.notes" = "Notes";
+"tab.mood" = "Mood";
+"tab.graph" = "Graph";
+"tab.progress" = "Progress";
+"tab.settings" = "Settings";
+
+/* Notes */
+"notes.title" = "Notes";
+"notes.new" = "New Note";
+"notes.search" = "Search notes...";
+"notes.filter.all" = "All";
+"notes.filter.favorites" = "Favorites";
+"notes.filter.today" = "Today";
+"notes.filter.thisWeek" = "This Week";
+"notes.filter.withAudio" = "With Audio";
+"notes.empty" = "No notes yet. Start writing!";
+"notes.delete.confirm" = "Delete this note?";
+"notes.delete.message" = "This action cannot be undone.";
+
+/* Note Editor */
+"editor.title" = "Title";
+"editor.content" = "What's on your mind?";
+"editor.save" = "Save";
+"editor.cancel" = "Cancel";
+"editor.recording" = "Recording...";
+"editor.transcribing" = "Transcribing...";
+"editor.wordCount" = "%d words";
+
+/* Mood */
+"mood.title" = "Mood Dashboard";
+"mood.current" = "Current Mood";
+"mood.timeline" = "Timeline";
+"mood.patterns" = "Patterns";
+"mood.insights" = "Insights";
+"mood.selectEmotion" = "How are you feeling?";
+"mood.empty" = "No mood data yet. Start tracking!";
+
+/* Emotions */
+"emotion.joy" = "Joy";
+"emotion.sadness" = "Sadness";
+"emotion.anger" = "Anger";
+"emotion.fear" = "Fear";
+"emotion.anxiety" = "Anxiety";
+"emotion.contentment" = "Contentment";
+"emotion.excitement" = "Excitement";
+"emotion.peaceful" = "Peaceful";
+
+/* Knowledge Graph */
+"graph.title" = "Knowledge Graph";
+"graph.entities" = "Entities";
+"graph.relationships" = "Relationships";
+"graph.export" = "Export";
+"graph.empty" = "No entities yet. Keep writing!";
+
+/* Entities */
+"entity.person" = "Person";
+"entity.place" = "Place";
+"entity.organization" = "Organization";
+"entity.topic" = "Topic";
+"entity.project" = "Project";
+"entity.goal" = "Goal";
+
+/* Gamification */
+"gamification.title" = "Progress";
+"gamification.level" = "Level %d";
+"gamification.xp" = "%d XP";
+"gamification.streak" = "%d Day Streak";
+"gamification.achievements" = "Achievements";
+"gamification.quests" = "Quests";
+"gamification.garden" = "Garden";
+"gamification.levelUp" = "Level Up!";
+
+/* Achievements */
+"achievement.firstNote" = "First Note";
+"achievement.streak7" = "7-Day Streak";
+"achievement.streak30" = "30-Day Streak";
+"achievement.notes100" = "100 Notes";
+"achievement.explorer" = "Explorer";
+"achievement.unlocked" = "Unlocked!";
+
+/* Settings */
+"settings.title" = "Settings";
+"settings.profile" = "Profile";
+"settings.notifications" = "Notifications";
+"settings.privacy" = "Privacy";
+"settings.subscription" = "Subscription";
+"settings.about" = "About";
+"settings.logout" = "Log Out";
+
+/* Privacy */
+"privacy.title" = "Privacy Dashboard";
+"privacy.encryption" = "End-to-End Encryption";
+"privacy.dataCollection" = "Data Collection";
+"privacy.export" = "Export My Data";
+"privacy.delete" = "Delete All Data";
+
+/* Subscription */
+"subscription.free" = "Free";
+"subscription.pro" = "Pro";
+"subscription.premium" = "Premium";
+"subscription.upgrade" = "Upgrade";
+"subscription.monthly" = "Monthly";
+"subscription.yearly" = "Yearly";
+"subscription.lifetime" = "Lifetime";
+
+/* Errors */
+"error.generic" = "Something went wrong. Please try again.";
+"error.network" = "Network error. Check your connection.";
+"error.save" = "Failed to save. Please try again.";
+"error.load" = "Failed to load data.";
+
+/* Alerts */
+"alert.ok" = "OK";
+"alert.cancel" = "Cancel";
+"alert.delete" = "Delete";
+"alert.confirm" = "Confirm";
+
+/* Accessibility */
+"accessibility.close" = "Close";
+"accessibility.menu" = "Menu";
+"accessibility.back" = "Back";
+"accessibility.more" = "More options";

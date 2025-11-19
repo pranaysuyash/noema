@@ -1,0 +1,28 @@
+// Debug Configuration Settings
+
+// Product Settings
+PRODUCT_NAME = Noema
+PRODUCT_BUNDLE_IDENTIFIER = com.noema.app
+
+// SDK and Deployment
+SDKROOT = iphoneos
+IPHONEOS_DEPLOYMENT_TARGET = 17.0
+SUPPORTED_PLATFORMS = iphoneos iphonesimulator
+
+// Build Settings
+SWIFT_VERSION = 6.0
+SWIFT_OPTIMIZATION_LEVEL = -Onone
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG
+
+// Debug Information
+DEBUG_INFORMATION_FORMAT = dwarf
+GCC_OPTIMIZATION_LEVEL = 0
+GCC_PREPROCESSOR_DEFINITIONS = DEBUG=1
+
+// Code Signing
+CODE_SIGN_STYLE = Automatic
+CODE_SIGN_IDENTITY = Apple Development
+
+// Other Settings
+ENABLE_TESTABILITY = YES
+ONLY_ACTIVE_ARCH = YES

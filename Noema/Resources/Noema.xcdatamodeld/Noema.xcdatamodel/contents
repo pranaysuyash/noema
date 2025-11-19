@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23A344" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+
+    <!-- Note Entity -->
+    <entity name="Note" representedClassName="Note" syncable="YES">
+        <!-- Identity -->
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="modifiedAt" attributeType="Date" usesScalarValueType="NO"/>
+
+        <!-- Content -->
+        <attribute name="content" attributeType="String" defaultValueString=""/>
+        <attribute name="summary" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+
+        <!-- Audio -->
+        <attribute name="hasAudio" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="audioURL" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="URL"/>
+        <attribute name="audioDuration" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="transcriptionStatusRaw" attributeType="String" defaultValueString="pending"/>
+
+        <!-- Metadata -->
+        <attribute name="wordCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="characterCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="language" optional="YES" attributeType="String"/>
+
+        <!-- Emotion & Mood -->
+        <attribute name="dominantEmotionRaw" optional="YES" attributeType="String"/>
+        <attribute name="emotionIntensity" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+
+        <!-- Location & Environment -->
+        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="placeName" optional="YES" attributeType="String"/>
+        <attribute name="timeOfDayRaw" attributeType="String" defaultValueString="morning"/>
+
+        <!-- Organization -->
+        <attribute name="isPinned" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isFavorite" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isArchived" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+
+        <!-- Privacy & Sync -->
+        <attribute name="isEncrypted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="syncStatusRaw" attributeType="String" defaultValueString="localOnly"/>
+        <attribute name="shareLevelRaw" attributeType="String" defaultValueString="private"/>
+
+        <!-- Gamification -->
+        <attribute name="qualityScore" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="insightLevelRaw" optional="YES" attributeType="String"/>
+        <attribute name="contributedXP" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+
+        <!-- Relationships -->
+        <relationship name="moodSnapshot" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EmotionalState" inverseName="note" inverseEntity="EmotionalState"/>
+        <relationship name="location" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Location" inverseName="notes" inverseEntity="Location"/>
+        <relationship name="weather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WeatherSnapshot" inverseName="notes" inverseEntity="WeatherSnapshot"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="notes" inverseEntity="Tag"/>
+        <relationship name="folder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Folder" inverseName="notes" inverseEntity="Folder"/>
+        <relationship name="entityMentions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="EntityMention" inverseName="note" inverseEntity="EntityMention"/>
+        <relationship name="relatedNotes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Note" inverseName="relatedNotes" inverseEntity="Note"/>
+    </entity>
+
+    <!-- EmotionalState Entity -->
+    <entity name="EmotionalState" representedClassName="EmotionalState" syncable="YES">
+        <!-- Identity -->
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO"/>
+
+        <!-- Core Dimensions -->
+        <attribute name="valence" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="arousal" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="dominance" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+
+        <!-- Additional Dimensions -->
+        <attribute name="energyLevel" attributeType="Double" defaultValueString="0.5" usesScalarValueType="YES"/>
+        <attribute name="stressLevel" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="focusLevel" attributeType="Double" defaultValueString="0.5" usesScalarValueType="YES"/>
+
+        <!-- Emotion Classification -->
+        <attribute name="primaryEmotionRaw" attributeType="String" defaultValueString="contentment"/>
+        <attribute name="secondaryEmotionsRaw" optional="YES" attributeType="String"/>
+        <attribute name="emotionIntensity" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+
+        <!-- Detection Source & Confidence -->
+        <attribute name="detectionSourcesRaw" optional="YES" attributeType="String"/>
+        <attribute name="confidence" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+
+        <!-- Context -->
+        <attribute name="trigger" optional="YES" attributeType="String"/>
+
+        <!-- Voice Characteristics -->
+        <attribute name="voicePitch" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="voiceEnergy" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="speakingRate" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="pauseFrequency" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+
+        <!-- Biometric Data -->
+        <attribute name="heartRate" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="heartRateVariability" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+
+        <!-- Relationships -->
+        <relationship name="note" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Note" inverseName="moodSnapshot" inverseEntity="Note"/>
+    </entity>
+
+    <!-- Entity Entity -->
+    <entity name="Entity" representedClassName="Entity" syncable="YES">
+        <!-- Identity -->
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="typeRaw" attributeType="String" defaultValueString="custom"/>
+
+        <!-- Aliases -->
+        <attribute name="aliasesRaw" optional="YES" attributeType="String"/>
+        <attribute name="canonicalName" attributeType="String" defaultValueString=""/>
+
+        <!-- Metadata -->
+        <attribute name="firstMentioned" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="lastMentioned" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="totalMentions" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+
+        <!-- Emotional Association -->
+        <attribute name="averageValence" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="averageArousal" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="averageEnergy" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="emotionalVariance" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+
+        <!-- Importance & Centrality -->
+        <attribute name="importanceScore" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="recencyScore" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="frequencyScore" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+
+        <!-- Custom Attributes -->
+        <attribute name="attributesJSON" optional="YES" attributeType="String"/>
+
+        <!-- User Control -->
+        <attribute name="userNotes" optional="YES" attributeType="String"/>
+        <attribute name="isPrivate" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isFavorite" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="color" optional="YES" attributeType="String"/>
+
+        <!-- Relationships -->
+        <relationship name="mentions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="EntityMention" inverseName="entity" inverseEntity="EntityMention"/>
+        <relationship name="relationships" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Relationship" inverseName="entity1" inverseEntity="Relationship"/>
+    </entity>
+
+    <!-- EntityMention Entity -->
+    <entity name="EntityMention" representedClassName="EntityMention" syncable="YES">
+        <!-- Identity -->
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+
+        <!-- Position in Note -->
+        <attribute name="position" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="contextSnippet" attributeType="String" defaultValueString=""/>
+
+        <!-- Emotional Context -->
+        <attribute name="sentimentAtMention" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+
+        <!-- Metadata -->
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="importance" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+
+        <!-- Relationships -->
+        <relationship name="entity" maxCount="1" deletionRule="Nullify" destinationEntity="Entity" inverseName="mentions" inverseEntity="Entity"/>
+        <relationship name="note" maxCount="1" deletionRule="Nullify" destinationEntity="Note" inverseName="entityMentions" inverseEntity="Note"/>
+        <relationship name="emotionalState" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EmotionalState"/>
+    </entity>
+
+    <!-- Relationship Entity -->
+    <entity name="Relationship" representedClassName="Relationship" syncable="YES">
+        <!-- Identity -->
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+
+        <!-- Relationship Type -->
+        <attribute name="relationshipTypeRaw" attributeType="String" defaultValueString="coOccurrence"/>
+
+        <!-- Strength & Frequency -->
+        <attribute name="strength" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="coOccurrences" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+
+        <!-- Emotional Tone -->
+        <attribute name="averageEmotionalTone" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="emotionalVariance" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+
+        <!-- Temporal -->
+        <attribute name="firstCoOccurrence" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="lastCoOccurrence" attributeType="Date" usesScalarValueType="NO"/>
+
+        <!-- User-Defined -->
+        <attribute name="label" optional="YES" attributeType="String"/>
+        <attribute name="notes" optional="YES" attributeType="String"/>
+
+        <!-- Relationships -->
+        <relationship name="entity1" maxCount="1" deletionRule="Nullify" destinationEntity="Entity" inverseName="relationships" inverseEntity="Entity"/>
+        <relationship name="entity2" maxCount="1" deletionRule="Nullify" destinationEntity="Entity"/>
+    </entity>
+
+    <!-- Location Entity -->
+    <entity name="Location" representedClassName="Location" syncable="YES">
+        <!-- Identity -->
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+
+        <!-- Coordinates -->
+        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="altitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+
+        <!-- Place Information -->
+        <attribute name="placeName" optional="YES" attributeType="String"/>
+        <attribute name="city" optional="YES" attributeType="String"/>
+        <attribute name="state" optional="YES" attributeType="String"/>
+        <attribute name="country" optional="YES" attributeType="String"/>
+        <attribute name="placeTypeRaw" optional="YES" attributeType="String"/>
+
+        <!-- Emotional Associations -->
+        <attribute name="averageValence" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="averageEnergy" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="visitCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+
+        <!-- Metadata -->
+        <attribute name="firstVisit" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="lastVisit" attributeType="Date" usesScalarValueType="NO"/>
+
+        <!-- User Control -->
+        <attribute name="isPrivate" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="customLabel" optional="YES" attributeType="String"/>
+
+        <!-- Relationships -->
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Note" inverseName="location" inverseEntity="Note"/>
+    </entity>
+
+    <!-- WeatherSnapshot Entity -->
+    <entity name="WeatherSnapshot" representedClassName="WeatherSnapshot" syncable="YES">
+        <!-- Identity -->
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO"/>
+
+        <!-- Weather Conditions -->
+        <attribute name="temperature" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="feelsLike" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="humidity" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="pressure" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="conditionsRaw" attributeType="String" defaultValueString="clear"/>
+        <attribute name="cloudCover" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="visibility" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="windSpeed" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="windDirection" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+
+        <!-- Air Quality -->
+        <attribute name="airQualityIndex" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="airQualityCategoryRaw" optional="YES" attributeType="String"/>
+
+        <!-- Sun -->
+        <attribute name="uvIndex" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sunrise" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="sunset" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+
+        <!-- Relationships -->
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Note" inverseName="weather" inverseEntity="Note"/>
+    </entity>
+
+    <!-- Tag Entity -->
+    <entity name="Tag" representedClassName="Tag" syncable="YES">
+        <!-- Identity -->
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+
+        <!-- Appearance -->
+        <attribute name="color" optional="YES" attributeType="String"/>
+        <attribute name="icon" optional="YES" attributeType="String"/>
+
+        <!-- Metadata -->
+        <attribute name="isSystem" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="usageCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+
+        <!-- Relationships -->
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Note" inverseName="tags" inverseEntity="Note"/>
+    </entity>
+
+    <!-- Folder Entity -->
+    <entity name="Folder" representedClassName="Folder" syncable="YES">
+        <!-- Identity -->
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+
+        <!-- Appearance -->
+        <attribute name="color" optional="YES" attributeType="String"/>
+        <attribute name="icon" optional="YES" attributeType="String"/>
+
+        <!-- Metadata -->
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="sortOrder" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+
+        <!-- Relationships -->
+        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Folder" inverseName="subfolders" inverseEntity="Folder"/>
+        <relationship name="subfolders" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Folder" inverseName="parent" inverseEntity="Folder"/>
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Note" inverseName="folder" inverseEntity="Note"/>
+    </entity>
+
+    <!-- Achievement Entity -->
+    <entity name="Achievement" representedClassName="Achievement" syncable="YES">
+        <!-- Identity -->
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+
+        <!-- Definition -->
+        <attribute name="typeRaw" attributeType="String" defaultValueString="notes100"/>
+        <attribute name="categoryRaw" attributeType="String" defaultValueString="consistency"/>
+        <attribute name="title" attributeType="String" defaultValueString=""/>
+        <attribute name="achievementDescription" attributeType="String" defaultValueString=""/>
+
+        <!-- Visuals -->
+        <attribute name="iconName" attributeType="String" defaultValueString="star.fill"/>
+        <attribute name="badgeImageURL" optional="YES" attributeType="String"/>
+        <attribute name="color" attributeType="String" defaultValueString="#FFD700"/>
+
+        <!-- Unlock Criteria -->
+        <attribute name="requiredValue" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="progress" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="unlockedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+
+        <!-- Rewards -->
+        <attribute name="xpReward" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+
+        <!-- Rarity -->
+        <attribute name="rarityRaw" attributeType="String" defaultValueString="common"/>
+
+        <!-- Relationships -->
+        <relationship name="userProfile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserProfile" inverseName="achievements" inverseEntity="UserProfile"/>
+    </entity>
+
+    <!-- Quest Entity -->
+    <entity name="Quest" representedClassName="Quest" syncable="YES">
+        <!-- Identity -->
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+
+        <!-- Definition -->
+        <attribute name="title" attributeType="String" defaultValueString=""/>
+        <attribute name="questDescription" attributeType="String" defaultValueString=""/>
+        <attribute name="typeRaw" attributeType="String" defaultValueString="consistency"/>
+
+        <!-- Timing -->
+        <attribute name="startDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="endDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="durationRaw" attributeType="String" defaultValueString="weekly"/>
+
+        <!-- Progress -->
+        <attribute name="targetValue" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="currentProgress" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="completedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+
+        <!-- Rewards -->
+        <attribute name="xpReward" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+
+        <!-- Personalization -->
+        <attribute name="isPersonalized" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="personalizationReason" optional="YES" attributeType="String"/>
+
+        <!-- Relationships -->
+        <relationship name="badgeReward" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Achievement"/>
+        <relationship name="userProfile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserProfile" inverseName="activeQuests" inverseEntity="UserProfile"/>
+    </entity>
+
+    <!-- UserProfile Entity -->
+    <entity name="UserProfile" representedClassName="UserProfile" syncable="YES">
+        <!-- Identity -->
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+
+        <!-- Gamification -->
+        <attribute name="level" attributeType="Integer 64" defaultValueString="1" usesScalarValueType="YES"/>
+        <attribute name="totalXP" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="currentStreak" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="longestStreak" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="lastNoteDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="streakFreezes" attributeType="Integer 64" defaultValueString="2" usesScalarValueType="YES"/>
+
+        <!-- Garden State -->
+        <attribute name="gardenStateJSON" optional="YES" attributeType="String"/>
+
+        <!-- Preferences -->
+        <attribute name="preferredLanguage" attributeType="String" defaultValueString="en"/>
+        <attribute name="preferredThemeRaw" attributeType="String" defaultValueString="auto"/>
+        <attribute name="notificationSettingsJSON" optional="YES" attributeType="String"/>
+
+        <!-- Privacy Settings -->
+        <attribute name="dataProcessingPreferenceRaw" attributeType="String" defaultValueString="onDeviceOnly"/>
+        <attribute name="syncEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="healthKitEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="locationServicesEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+
+        <!-- Subscription -->
+        <attribute name="subscriptionTierRaw" attributeType="String" defaultValueString="free"/>
+        <attribute name="subscriptionExpiresAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="isLifetimeMember" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+
+        <!-- Statistics -->
+        <attribute name="totalNotes" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="totalWords" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="totalAudioMinutes" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="totalEntitiesDetected" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+
+        <!-- Relationships -->
+        <relationship name="achievements" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Achievement" inverseName="userProfile" inverseEntity="Achievement"/>
+        <relationship name="activeQuests" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Quest" inverseName="userProfile" inverseEntity="Quest"/>
+    </entity>
+
+    <!-- HealthMetric Entity -->
+    <entity name="HealthMetric" representedClassName="HealthMetric" syncable="YES">
+        <!-- Identity -->
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO"/>
+
+        <!-- Metric -->
+        <attribute name="metricTypeRaw" attributeType="String" defaultValueString="steps"/>
+        <attribute name="value" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="unit" attributeType="String" defaultValueString=""/>
+
+        <!-- Privacy -->
+        <attribute name="isShared" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+
+        <!-- Relationships -->
+        <relationship name="correlatedMood" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EmotionalState"/>
+    </entity>
+
+</model>
